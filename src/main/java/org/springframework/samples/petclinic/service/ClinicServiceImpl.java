@@ -20,8 +20,10 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.orm.ObjectRetrievalFailureException;
+import org.springframework.samples.petclinic.exceptions.DuplicateEntryException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -268,9 +270,14 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public void saveOwner(Owner owner) throws DataAccessException {
-		ownerRepository.save(owner);
+	public void saveOwner(final Owner owner) throws DataAccessException, DuplicateEntryException {
+        Owner ownerAux = this.ownerRepository.findByFirstNameAndLastName(owner.getFirstName(), owner.getLastName());
 
+        if (ownerAux != null) {
+            throw new DuplicateEntryException("The owner already exists.");
+        }
+
+        this.ownerRepository.save(owner);
 	}
 
 	@Override

@@ -41,6 +41,7 @@ CREATE TABLE owners (
   city       VARCHAR(80),
   telephone  VARCHAR(20)
 );
+ALTER TABLE owners ADD CONSTRAINT UQ_OWNER UNIQUE (first_name, last_name, address, city, telephone);
 CREATE INDEX owners_last_name ON owners (last_name);
 
 CREATE TABLE pets (

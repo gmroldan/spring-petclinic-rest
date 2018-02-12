@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.exceptions.DuplicateEntryException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.validation.BindingResult;
@@ -83,7 +84,7 @@ public class OwnerRestController {
 
 	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult,
-			UriComponentsBuilder ucBuilder) {
+			UriComponentsBuilder ucBuilder) throws DuplicateEntryException {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
 		if (bindingResult.hasErrors() || (owner == null)) {
@@ -98,7 +99,7 @@ public class OwnerRestController {
 
 	@RequestMapping(value = "/{ownerId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Owner> updateOwner(@PathVariable("ownerId") int ownerId, @RequestBody @Valid Owner owner,
-			BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+			BindingResult bindingResult, UriComponentsBuilder ucBuilder) throws DuplicateEntryException {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
 		if (bindingResult.hasErrors() || (owner == null)) {

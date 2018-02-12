@@ -52,4 +52,5 @@ public interface OwnerRepository extends CrudRepository<Owner, Integer> {
     @Override
     List<Owner> findAll() throws DataAccessException;
 
+    Owner findByFirstNameAndLastName(String firstName, String lastName);
 }

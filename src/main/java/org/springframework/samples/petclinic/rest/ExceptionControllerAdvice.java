@@ -16,12 +16,17 @@
 
 package org.springframework.samples.petclinic.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.exceptions.DuplicateEntryException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
  * @author Vitaliy Fedoriv
@@ -29,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @ControllerAdvice
-public class ExceptionControllerAdvice {
+public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> exception(Exception e) {
@@ -43,14 +48,25 @@ public class ExceptionControllerAdvice {
 		}
 		return ResponseEntity.badRequest().body(respJSONstring);
 	}
-	
+
+    @ExceptionHandler(DuplicateEntryException.class)
+    public ResponseEntity<Object> handleDuplicateEntryException(Exception ex) {
+        ObjectMapper mapper = new ObjectMapper();
+        ErrorInfo errorInfo = new ErrorInfo(ex);
+        String respJSONstring = "{}";
+        try {
+            respJSONstring = mapper.writeValueAsString(errorInfo);
+        } catch (JsonProcessingException e1) {
+            e1.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(respJSONstring);
+    }
+
 	private class ErrorInfo {
-	    public final String className;
-	    public final String exMessage;
+	    public final String message;
 
 	    public ErrorInfo(Exception ex) {
-	        this.className = ex.getClass().getName();
-	        this.exMessage = ex.getLocalizedMessage();
+	        this.message = ex.getLocalizedMessage();
 	    }
 	}
 }

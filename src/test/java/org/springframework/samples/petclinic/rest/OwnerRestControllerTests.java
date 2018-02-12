@@ -16,7 +16,9 @@
 
 package org.springframework.samples.petclinic.rest;
 
+import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,12 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.exceptions.DuplicateEntryException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ApplicationTestConfig;
 import org.springframework.samples.petclinic.service.ClinicService;
@@ -190,6 +194,20 @@ public class OwnerRestControllerTests {
     	this.mockMvc.perform(post("/api/owners/")
     		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
     		.andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testCreateOwnerDuplicateOwner() throws Exception {
+        Owner newOwner = this.owners.get(0);
+        newOwner.setId(999);
+
+        doThrow(DuplicateEntryException.class).when(this.clinicService).saveOwner(any(Owner.class));
+
+        ObjectMapper mapper = new ObjectMapper();
+        String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
+        this.mockMvc.perform(post("/api/owners/")
+            .content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isPreconditionFailed());
     }
 
     @Test
