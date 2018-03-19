@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.exceptions.DuplicateEntryException;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -95,7 +94,7 @@ public abstract class AbstractClinicServiceTests {
         owner.setAddress("4, Evans Street");
         owner.setCity("Wollongong");
         owner.setTelephone("4444444444");
-        this.clinicService.saveOwner(owner);
+        this.clinicService.saveNewOwner(owner);
         assertThat(owner.getId().longValue()).isNotEqualTo(0);
 
         owners = this.clinicService.findOwnerByLastName("Schultz");
@@ -110,7 +109,7 @@ public abstract class AbstractClinicServiceTests {
         String newLastName = oldLastName + "X";
 
         owner.setLastName(newLastName);
-        this.clinicService.saveOwner(owner);
+        this.clinicService.updateOwner(owner);
 
         // retrieving new name from database
         owner = this.clinicService.findOwnerById(1);
@@ -150,7 +149,7 @@ public abstract class AbstractClinicServiceTests {
         assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 
         this.clinicService.savePet(pet);
-        this.clinicService.saveOwner(owner6);
+        this.clinicService.updateOwner(owner6);
 
         owner6 = this.clinicService.findOwnerById(6);
         assertThat(owner6.getPets().size()).isEqualTo(found + 1);

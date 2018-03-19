@@ -54,7 +54,8 @@ public interface ClinicService {
 
 	Owner findOwnerById(int id) throws DataAccessException;
 	Collection<Owner> findAllOwners() throws DataAccessException;
-	void saveOwner(Owner owner) throws DataAccessException, DuplicateEntryException;
+	void saveNewOwner(Owner owner) throws DataAccessException, DuplicateEntryException;
+    void updateOwner(Owner owner) throws DataAccessException, DuplicateEntryException;
 	void deleteOwner(Owner owner) throws DataAccessException;
 	Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException;
 

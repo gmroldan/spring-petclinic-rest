@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,7 +200,7 @@ public class OwnerRestControllerTests {
         Owner newOwner = this.owners.get(0);
         newOwner.setId(999);
 
-        doThrow(DuplicateEntryException.class).when(this.clinicService).saveOwner(any(Owner.class));
+        doThrow(DuplicateEntryException.class).when(this.clinicService).saveNewOwner(any(Owner.class));
 
         ObjectMapper mapper = new ObjectMapper();
         String newOwnerAsJSON = mapper.writeValueAsString(newOwner);

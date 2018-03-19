@@ -270,7 +270,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public void saveOwner(final Owner owner) throws DataAccessException, DuplicateEntryException {
+	public void saveNewOwner(final Owner owner) throws DataAccessException, DuplicateEntryException {
         Owner ownerAux = this.ownerRepository.findByFirstNameAndLastName(owner.getFirstName(), owner.getLastName());
 
         if (ownerAux != null) {
@@ -279,6 +279,12 @@ public class ClinicServiceImpl implements ClinicService {
 
         this.ownerRepository.save(owner);
 	}
+
+    @Override
+    @Transactional
+    public void updateOwner(final Owner owner) throws DataAccessException, DuplicateEntryException {
+        this.ownerRepository.save(owner);
+    }
 
 	@Override
 	@Transactional(readOnly = true)

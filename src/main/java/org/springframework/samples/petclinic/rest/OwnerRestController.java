@@ -95,7 +95,7 @@ public class OwnerRestController {
 			headers.add("errors", errors.toJSON());
 			return new ResponseEntity<Owner>(headers, HttpStatus.BAD_REQUEST);
 		}
-		this.clinicService.saveOwner(owner);
+		this.clinicService.saveNewOwner(owner);
 		headers.setLocation(ucBuilder.path("/api/owners/{id}").buildAndExpand(owner.getId()).toUri());
 		return new ResponseEntity<Owner>(owner, headers, HttpStatus.CREATED);
 	}
@@ -119,7 +119,7 @@ public class OwnerRestController {
 		currentOwner.setFirstName(owner.getFirstName());
 		currentOwner.setLastName(owner.getLastName());
 		currentOwner.setTelephone(owner.getTelephone());
-		this.clinicService.saveOwner(currentOwner);
+		this.clinicService.updateOwner(currentOwner);
 		return new ResponseEntity<Owner>(currentOwner, HttpStatus.NO_CONTENT);
 	}
 
