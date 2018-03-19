@@ -31,7 +31,10 @@ import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +54,7 @@ public class OwnerRestController {
 	@Autowired
 	private ClinicService clinicService;
 
-	@RequestMapping(value = "/*/lastname/{lastName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "/*/lastname/{lastName}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<Owner>> getOwnersList(@PathVariable("lastName") String ownerLastName) {
 		if (ownerLastName == null) {
 			ownerLastName = "";
@@ -63,7 +66,7 @@ public class OwnerRestController {
 		return new ResponseEntity<Collection<Owner>>(owners, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<Owner>> getOwners() {
 		Collection<Owner> owners = this.clinicService.findAllOwners();
 		if (owners.isEmpty()) {
@@ -72,7 +75,7 @@ public class OwnerRestController {
 		return new ResponseEntity<Collection<Owner>>(owners, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "/{ownerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Owner> getOwner(@PathVariable("ownerId") int ownerId) {
 		Owner owner = null;
 		owner = this.clinicService.findOwnerById(ownerId);
@@ -82,7 +85,7 @@ public class OwnerRestController {
 		return new ResponseEntity<Owner>(owner, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult,
 			UriComponentsBuilder ucBuilder) throws DuplicateEntryException {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
@@ -97,7 +100,7 @@ public class OwnerRestController {
 		return new ResponseEntity<Owner>(owner, headers, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PutMapping(value = "/{ownerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Owner> updateOwner(@PathVariable("ownerId") int ownerId, @RequestBody @Valid Owner owner,
 			BindingResult bindingResult, UriComponentsBuilder ucBuilder) throws DuplicateEntryException {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
