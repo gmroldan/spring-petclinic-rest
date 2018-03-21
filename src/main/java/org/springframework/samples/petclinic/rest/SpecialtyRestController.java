@@ -31,7 +31,11 @@ import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,11 +51,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @CrossOrigin(exposedHeaders = "errors, content-type")
 @RequestMapping("api/specialties")
 public class SpecialtyRestController {
-	
+
 	@Autowired
 	private ClinicService clinicService;
-	
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<Specialty>> getAllSpecialtys(){
 		Collection<Specialty> specialties = new ArrayList<Specialty>();
 		specialties.addAll(this.clinicService.findAllSpecialties());
@@ -60,8 +64,8 @@ public class SpecialtyRestController {
 		}
 		return new ResponseEntity<Collection<Specialty>>(specialties, HttpStatus.OK);
 	}
-	
-	@RequestMapping(value = "/{specialtyId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	@GetMapping(value = "/{specialtyId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Specialty> getSpecialty(@PathVariable("specialtyId") int specialtyId){
 		Specialty specialty = this.clinicService.findSpecialtyById(specialtyId);
 		if(specialty == null){
@@ -69,9 +73,9 @@ public class SpecialtyRestController {
 		}
 		return new ResponseEntity<Specialty>(specialty, HttpStatus.OK);
 	}
-	
-	
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+
+	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Specialty> addSpecialty(@RequestBody @Valid Specialty specialty, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
@@ -84,8 +88,8 @@ public class SpecialtyRestController {
 		headers.setLocation(ucBuilder.path("/api/specialtys/{id}").buildAndExpand(specialty.getId()).toUri());
 		return new ResponseEntity<Specialty>(specialty, headers, HttpStatus.CREATED);
 	}
-	
-	@RequestMapping(value = "/{specialtyId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	@PutMapping(value = "/{specialtyId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Specialty> updateSpecialty(@PathVariable("specialtyId") int specialtyId, @RequestBody @Valid Specialty specialty, BindingResult bindingResult){
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
@@ -102,8 +106,8 @@ public class SpecialtyRestController {
 		this.clinicService.saveSpecialty(currentSpecialty);
 		return new ResponseEntity<Specialty>(currentSpecialty, HttpStatus.NO_CONTENT);
 	}
-	
-	@RequestMapping(value = "/{specialtyId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+	@DeleteMapping(value = "/{specialtyId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@Transactional
 	public ResponseEntity<Void> deleteSpecialty(@PathVariable("specialtyId") int specialtyId){
 		Specialty specialty = this.clinicService.findSpecialtyById(specialtyId);
